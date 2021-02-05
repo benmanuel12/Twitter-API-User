@@ -2,6 +2,8 @@ const dotenv = require('dotenv')
 
 const Twitter = require('twitter')
 
+import {putTweets} from './putTweets'
+
 dotenv.config();
 
 let client = new Twitter({
@@ -11,6 +13,52 @@ let client = new Twitter({
     access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
-async function searchTweets(keyword: string){
-    
+async function searchTweets(keyword: string, location: string){
+    let TweetArray: Array<string>[] = []
+    try {
+        let searchParameters = {
+            q: keyword,
+            count: 50,
+            lang: "en"
+        };
+
+        let result = await client.get("search/tweets", searchParameters);
+        // console.log(JSON.stringify(result));
+
+        result.statuses.forEach((tweet: any) => {
+            //console.log(tweet)
+            let TweetData = [tweet.id, tweet.text, location]
+            TweetArray.push(TweetData)
+        });
+        return TweetArray;
+    }
+    catch(error){
+        console.log(JSON.stringify(error));
+    }
 }
+
+async function doEverything() {
+    let tweets1: string[][] = await searchTweets("Northern Ireland weather", "Armagh") as Array<string>[]
+    let tweets2: string[][] = await searchTweets("Northern Scotland weather", "Braemar") as Array<string>[]
+    let tweets3: string[][] = await searchTweets("South West England weather", "Camborne") as Array<string>[]
+    let tweets4: string[][] = await searchTweets("Northern England weather", "Durham") as Array<string>[]
+    let tweets5: string[][] = await searchTweets("London weather", "Heathrow") as Array<string>[]
+
+    putTweets(tweets1)
+    putTweets(tweets2)
+    putTweets(tweets3)
+    putTweets(tweets4)
+    putTweets(tweets5)
+}
+
+doEverything();
+
+
+
+/*
+Armagh - Northern Ireland
+Braemar - Northern Scotland
+Camborne - South West England
+Durham - Northern England
+Heathrow - London
+*/
