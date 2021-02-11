@@ -18,16 +18,16 @@ async function searchTweets(keyword: string, location: string){
     try {
         let searchParameters = {
             q: keyword,
-            count: 50,
+            count: 100,
             lang: "en"
         };
 
         let result = await client.get("search/tweets", searchParameters);
-        // console.log(JSON.stringify(result));
+        //console.log(JSON.stringify(result));
 
         result.statuses.forEach((tweet: any) => {
             //console.log(tweet)
-            let TweetData = [tweet.id, tweet.text, location]
+            let TweetData = [tweet.id, tweet.created_at, tweet.text, location]
             TweetArray.push(TweetData)
         });
         return TweetArray;
@@ -52,8 +52,6 @@ async function doEverything() {
 }
 
 doEverything();
-
-
 
 /*
 Armagh - Northern Ireland

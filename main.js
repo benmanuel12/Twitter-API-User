@@ -58,16 +58,16 @@ function searchTweets(keyword, location) {
                     _a.trys.push([1, 3, , 4]);
                     searchParameters = {
                         q: keyword,
-                        count: 50,
+                        count: 100,
                         lang: "en"
                     };
                     return [4 /*yield*/, client.get("search/tweets", searchParameters)];
                 case 2:
                     result = _a.sent();
-                    // console.log(JSON.stringify(result));
+                    //console.log(JSON.stringify(result));
                     result.statuses.forEach(function (tweet) {
                         //console.log(tweet)
-                        var TweetData = [tweet.id, tweet.text, location];
+                        var TweetData = [tweet.id, tweet.created_at, tweet.text, location];
                         TweetArray.push(TweetData);
                     });
                     return [2 /*return*/, TweetArray];

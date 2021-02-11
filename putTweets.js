@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.putTweets = void 0;
+var moment = require('moment');
 function putTweets(dataArray) {
     return __awaiter(this, void 0, void 0, function () {
         var AWS, _loop_1, i;
@@ -48,12 +49,22 @@ function putTweets(dataArray) {
             });
             _loop_1 = function (i) {
                 var documentClient = new AWS.DynamoDB.DocumentClient();
+                // Process date to timestamp
+                var dateString = dataArray[i][1];
+                // need YYYY-MM-DDTHH:MM:SS.sssZ
+                var dateStringArray = dateString.split(" ");
+                dateString = dateStringArray[5] + "-" + moment().month(dateStringArray[1]).format("MM") + "-" + dateStringArray[2] + "T" + dateStringArray[3] + ".000Z";
+                var myDate = Date.parse(dateString);
+                var myDateStringTemp = myDate.toString();
+                myDateStringTemp = myDateStringTemp.slice(0, -3);
+                myDate = parseInt(myDateStringTemp);
                 var params = {
                     TableName: "TweetData",
                     Item: {
                         TweetID: dataArray[i][0],
-                        TweetText: dataArray[i][1],
-                        Location: dataArray[i][2]
+                        TweetTime: myDate,
+                        TweetText: dataArray[i][2],
+                        Location: dataArray[i][3]
                     }
                 };
                 // let result: any = await documentClient.put(params).promise()
